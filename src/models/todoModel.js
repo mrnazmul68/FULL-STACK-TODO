@@ -5,7 +5,7 @@ const todoSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Title is required"],
+      required: [true, "Title is required, please input your title"],
       trim: true,
       maxLength: validation.title_maxLength,
     },
