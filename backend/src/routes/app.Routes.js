@@ -1,6 +1,12 @@
 import { Router } from "express";
-export const appRoutes = Router();
+
+ export const appRoutes = Router();
 
 appRoutes.get("/", (req, res) => {
-  res.send("Todo manager app backend is running");
+  res.json({
+    success: true,
+    message: "API running successfully",
+  });
 });
+
+
