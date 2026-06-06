@@ -1,39 +1,22 @@
 import { ZodError } from "zod";
-import ApiError from "../utils/ApiError.js";
-import { HTTP_STATUS } from "../shared/constants.js";
 
-const validate = (schema) => (req, res, next) => {
+export const validate = (schema) => (req, res, next) => {
   try {
-    const parsedData = schema.parse({
+    // validate + clean + return, invalid হলে error throw
+    const parsed = schema.parse({
+      //👉 schema structure match করার জন্য
       body: req.body,
-      query: req.query,
-      params: req.params,
     });
-
-    if ("body" in parsedData) req.body = parsedData.body;
-    if ("query" in parsedData) req.query = parsedData.query;
-    if ("params" in parsedData) req.params = parsedData.params;
-
-    return next();
+    //parsed object এর ভিতরে যদি body থাকে তাহলে original req.body replace করে validated data দিয়ে
+    if ("body" in parsed) req.body = parsed.body;
+    next()
   } catch (error) {
+    //যদি error টা Zod validation error হয় তাহলে আমরা custom ভাবে error handle করবো
     if (error instanceof ZodError) {
-      const errors = error.errors.map((err) => ({
+      error.errors.map((err) => ({
         field: err.path.length ? err.path.join(".") : "unknown",
         message: err.message,
       }));
-
-      return next(
-        new ApiError(
-          HTTP_STATUS.BAD_REQUEST,
-          "Validation failed",
-          true,
-          JSON.stringify(errors),
-        ),
-      );
     }
-
-    return next(error);
   }
 };
-
-export default validate;
