@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { VALIDATION } from "../../../shared/constant.js";
 
 const userSchema = new mongoose.Schema(
   {
