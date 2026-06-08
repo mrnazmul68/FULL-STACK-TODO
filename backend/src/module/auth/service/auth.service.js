@@ -1,5 +1,9 @@
-import { generateAccessToken, generateRefreshToken } from "../../../utils/jwt.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../../../utils/jwt.js";
 import { userAuthRepositories } from "../repositories/auth.repositories.js";
+import bcrypt from "bcrypt";
 
 export const createAuthService = (userRepositorie = userAuthRepositories()) => {
   const generateTokenPair = async (userId) => {
@@ -13,10 +17,32 @@ export const createAuthService = (userRepositorie = userAuthRepositories()) => {
   return {
     register: async ({ name, email, password }) => {
       const user = await userRepositorie.create({ name, email, password });
-      const token = await generateTokenPair(user._id);
+      const tokens = await generateTokenPair(user._id);
       return {
         user,
-        ...token,
+        ...tokens,
+      };
+    },
+    login: async ({ email, password }) => {
+      const user = await userRepositorie.findByEmail(email);
+
+      if (!user) {
+        throw new Error("Invalid email or password");
+      }
+
+      const isMatch = await bcrypt.compare(password, user.password);
+
+      if (!isMatch) {
+        throw new Error("Invalid email or password");
+      }
+
+      const { password: _, ...loginUserWithoutPassword } = user;
+
+      const tokens = generateTokenPair(user._id);
+
+      return {
+        user: loginUserWithoutPassword,
+        ...tokens,
       };
     },
   };
