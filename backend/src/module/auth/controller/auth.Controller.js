@@ -5,11 +5,13 @@ import { asyncHandler } from "./../../../utils/asyncHandler.js";
 const authService = createAuthService();
 
 export const register = asyncHandler(async (req, res) => {
-  const { user, accessToken } = await authService.register(req.body);
+  const { user, accessToken, refreshToken } = await authService.register(
+    req.body,
+  );
   res.status(HTTP_STATUS.CREATED).json({
     message: "User created successfully",
     user,
-    accessToken
+    accessToken,
+    refreshToken,
   });
-
 });

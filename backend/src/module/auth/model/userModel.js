@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { VALIDATION } from "../../../shared/constant.js";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
@@ -28,4 +29,16 @@ const userSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false },
 );
 
-export const User = mongoose.model("User", userSchema)
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+  } catch (error) {
+    console.error(error);
+  }
+});
+userSchema.methods.isPasswordCorrect = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
+export const User = mongoose.model("User", userSchema);
