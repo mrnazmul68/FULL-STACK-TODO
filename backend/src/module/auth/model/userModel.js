@@ -26,17 +26,29 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
   },
-  { timestamps: true, versionKey: false },
+  {
+    timestamps: true,
+    versionKey: false,
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.__v;
+        return ret;
+      },
+    },
+  },
 );
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   try {
-    this.password = await bcrypt.hash(this.password, VALIDATION.BCRYPT_SALT_ROUNDS);
+    this.password = await bcrypt.hash(
+      this.password,
+      VALIDATION.BCRYPT_SALT_ROUNDS,
+    );
   } catch (error) {
     console.error(error);
   }
 });
-
 
 export const User = mongoose.model("User", userSchema);

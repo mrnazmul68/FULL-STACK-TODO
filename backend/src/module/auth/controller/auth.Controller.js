@@ -1,15 +1,13 @@
 import { HTTP_STATUS } from "../../../shared/constant.js";
 import { ApiResponse } from "../../../utils/ApiResponse.js";
-import { createAuthService } from "../service/auth.service.js";
+import { AuthService } from "../service/auth.service.js";
 import { asyncHandler } from "./../../../utils/asyncHandler.js";
 
-const authService = createAuthService();
+const authService = new AuthService();
 
 // Register user
 export const register = asyncHandler(async (req, res) => {
-  const { user, accessToken, refreshToken } = await authService.register(
-    req.body,
-  );
+  const { user, accessToken, refreshToken } = await authService.register(req.body);
   new ApiResponse(
     HTTP_STATUS.CREATED,
     { user, accessToken, refreshToken },

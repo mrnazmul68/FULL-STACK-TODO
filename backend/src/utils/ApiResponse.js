@@ -1,11 +1,11 @@
 export class ApiResponse {
-  constructor(statuscode, data, message = "Success") {
-    this.success = statuscode < 400;
-    this.statuscode = statuscode;
+  constructor(statusCode, data, message = "Successfull") {
+    this.success = statusCode < 400;
+    this.statusCode = statusCode;
     this.data = data;
     this.message = message;
   }
   send(res) {
-    return res.status(this.statuscode).json(this);
+    return res.status(this.statusCode).json(this);
   }
 }
