@@ -4,4 +4,4 @@ export const TODO_STATUS = Object.freeze({
   COMPLETED: 'completed',
 });
 
-export const VALID_TODO_STATUSES = Object.freeze(Object.values(TODO_STATUS));
+export const VALID_TODO_STATUS = Object.freeze(Object.values(TODO_STATUS));

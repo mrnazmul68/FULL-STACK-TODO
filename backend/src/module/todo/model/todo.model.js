@@ -1,14 +1,10 @@
 import mongoose from "mongoose";
-import { TODO_STATUS, VALID_TODO_STATUSES } from "../../../shared/enums.js";
-import { VALIDATION } from "../../../shared/constants.js";
+import { VALIDATION } from "../../../shared/constant.js";
+import { TODO_STATUS, VALID_TODO_STATUS } from "../../../shared/enums.js";
 
 const todoSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
+    
     title: {
       type: String,
       required: [true, "Title is required"],
@@ -34,8 +30,8 @@ const todoSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: VALID_TODO_STATUSES,
-        message: `Status must be one of: ${VALID_TODO_STATUSES.join(", ")}`,
+        values: VALID_TODO_STATUS,
+        message: `Status must be one of: ${VALID_TODO_STATUS.join(", ")}`,
       },
       default: TODO_STATUS.ACTIVE,
     },
