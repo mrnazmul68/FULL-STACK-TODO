@@ -17,13 +17,6 @@ export const validate = (schema) => (req, res, next) => {
         message: err.message,
       }));
 
-      return next(
-        new ApiError(
-          HTTP_STATUS.UNPROCESSABLE_ENTITY,
-          "Validation Failed",
-          errors,
-        ),
-      );
     } 
     return next(error)
   }

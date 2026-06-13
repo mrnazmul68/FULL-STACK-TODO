@@ -5,7 +5,7 @@ export class UserRepository {
     this.model = model;
   }
   async createUser(userData) {
-   return await this.model.create(userData);
+    return await this.model.create(userData);
   }
 
   async findByEmail(email) {

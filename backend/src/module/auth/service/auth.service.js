@@ -13,27 +13,13 @@ export class AuthService {
     this.#userRepository = userRepo;
   }
 
-  //access and refresh token
-  async #generateTokenPair(userId) {
-    if (!userId) {
-      throw new ApiError("User id is required for generating tokens");
-    }
-    const accessToken = await generateAccessToken(userId);
-    const refreshToken = await generateRefreshToken(userId);
-
-    return {
-      accessToken,
-      refreshToken,
-    };
-  }
-
   // register user
   async register({ name, email, password }) {
     const existingUser = await this.#userRepository.findByEmail(email);
     if (existingUser) {
       throw new ApiError(
         HTTP_STATUS.CONFLICT,
-        "User with this email already exist",
+        "User already exist with this email",
       );
     }
 
@@ -49,6 +35,20 @@ export class AuthService {
     return {
       user,
       ...tokens,
+    };
+  }
+
+  //access and refresh token
+  async #generateTokenPair(userId) {
+    if (!userId) {
+      throw new ApiError("User id is required for generating tokens");
+    }
+    const accessToken = await generateAccessToken(userId);
+    const refreshToken = await generateRefreshToken(userId);
+
+    return {
+      accessToken,
+      refreshToken,
     };
   }
 
