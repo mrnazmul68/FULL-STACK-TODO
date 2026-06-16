@@ -11,4 +11,8 @@ export class UserRepository {
   async findByEmail(email) {
     return await this.model.findOne({ email }).select("+password");
   }
+
+  async findById(id, selectField = "") {
+    return await this.model.findOne(id).select(selectField);
+  }
 }
