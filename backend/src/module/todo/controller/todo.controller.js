@@ -11,3 +11,8 @@ export const createTodo = asyncHandler(async (req, res) => {
     res,
   );
 });
+
+//bulkCreateTodos
+export const bulkCreateTodos = asyncHandler(async (req, res) => {
+  const todos = req.body?.todos || [];
+});

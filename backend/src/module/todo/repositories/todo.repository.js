@@ -17,10 +17,12 @@ export class TodoRepository {
       );
     }
   }
+
+  //bulkCreateTodos
+  async bulkCreateTodos(todosData) {
+    return await this.model.create(todosData);
+  }
 }
-
-
-
 
 // import { Todo } from "../model/todo.model.js";
 

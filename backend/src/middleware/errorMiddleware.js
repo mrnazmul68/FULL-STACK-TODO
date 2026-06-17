@@ -2,7 +2,7 @@ import { HTTP_STATUS } from "../shared/constant.js";
 import { env } from "./../config/env.js";
 
 export const errorMiddleware = (err, _req, res, _next) => {
-  let statusCode = err.statusCode || http_status.internal_server_error;
+  let statusCode = err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
   let message = err.message || "internal server error";
   let errors = err.errors || [];
 

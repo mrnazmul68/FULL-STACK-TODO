@@ -1,12 +1,12 @@
-import { asyncHandler } from "./../utils/asyncHandler";
-import { ApiError } from "./../utils/ApiError";
-import { HTTP_STATUS } from "../shared/constant";
-import { verifyAccessToken } from "../utils/jwt";
-import { UserRepository } from "../module/auth/repositories/auth.repositories";
+import { asyncHandler } from "./../utils/asyncHandler.js";
+import { ApiError } from "./../utils/ApiError.js";
+import { HTTP_STATUS } from "../shared/constant.js";
+import { verifyAccessToken } from "../utils/jwt.js";
+import { UserRepository } from "../module/auth/repositories/auth.repositories.js";
 
 const userRepository = new UserRepository();
 
-const protect = asyncHandler(async (req, res, next) => {
+export const protect = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer")) {
     throw new ApiError(
