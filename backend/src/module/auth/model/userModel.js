@@ -16,7 +16,6 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
-      select: false,
     },
     password: {
       type: String,
@@ -41,14 +40,11 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
-  try {
-    this.password = await bcrypt.hash(
-      this.password,
-      VALIDATION.BCRYPT_SALT_ROUNDS,
-    );
-  } catch (error) {
-    console.error(error);
-  }
+
+  this.password = await bcrypt.hash(
+    this.password,
+    VALIDATION.BCRYPT_SALT_ROUNDS,
+  );
 });
 
 export const User = mongoose.model("User", userSchema);

@@ -13,6 +13,6 @@ export class UserRepository {
   }
 
   async findById(id, selectField = "") {
-    return await this.model.findOne(id).select(selectField);
+    return await this.model.findOne({_id : id}).select(selectField);
   }
 }

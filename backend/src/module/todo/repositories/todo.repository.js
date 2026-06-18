@@ -13,7 +13,7 @@ export class TodoRepository {
     } catch (err) {
       throw new ApiError(
         HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        "Todo creation failed",
+        err.message || "Todo creation failed",
       );
     }
   }

@@ -6,14 +6,17 @@ export class TodoService {
   constructor(todoRepo = new TodoRepository()) {
     this.todoRepository = todoRepo;
   }
-  async todos(todoData) {
+  async todos(todoData, userId) {
     try {
-      const todo = await this.todoRepository.createTodo({ ...todoData });
+      const todo = await this.todoRepository.createTodo({
+        ...todoData,
+        user: userId,
+      });
       return todo;
     } catch (error) {
       throw new ApiError(
         HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        "Service error for todo",
+        error.message || "Service error for todo",
       );
     }
   }

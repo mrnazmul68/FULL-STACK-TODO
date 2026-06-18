@@ -56,7 +56,7 @@ export class AuthService {
   async login({ email, password }) {
     const user = await this.#userRepository.findByEmail(email);
     if (!user) {
-      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "User is not exist");
+      throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "User does not exist");
     }
 
     const isMatched = await bcrypt.compare(password, user.password);
