@@ -18,6 +18,7 @@ const todoSchema = new mongoose.Schema(
         VALIDATION.TITLE_MAX_LENGTH,
         `Title cannot exceed ${VALIDATION.TITLE_MAX_LENGTH} characters`,
       ],
+      //pro-1
       validate: {
         validator: (v) => v != null && v.trim().length > 0,
         message: "Title is required",

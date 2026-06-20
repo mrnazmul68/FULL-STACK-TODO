@@ -10,7 +10,7 @@ export const todoValidationSchema = z.object({
       .min(1, "Title is required")
       .max(
         VALIDATION.TITLE_MAX_LENGTH,
-        `Title cannot be gratter then ${VALIDATION.TITLE_MAX_LENGTH} charrecters`,
+        `Title cannot be greater than ${VALIDATION.TITLE_MAX_LENGTH} characters`,
       ),
     description: z
       .string()
@@ -18,7 +18,7 @@ export const todoValidationSchema = z.object({
       .min(1, "Description is required")
       .max(
         VALIDATION.DESCRIPTION_MAX_LENGTH,
-        `Description cannot be gratter then ${VALIDATION.DESCRIPTION_MAX_LENGTH} charrecters`,
+        `Description cannot be greater than ${VALIDATION.DESCRIPTION_MAX_LENGTH} characters`,
       ),
     status: z
       .enum(VALID_TODO_STATUS, {
