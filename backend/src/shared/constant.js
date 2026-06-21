@@ -14,6 +14,8 @@ export const VALIDATION = {
   TITLE_MAX_LENGTH: 100,
 
   DESCRIPTION_MAX_LENGTH: 500,
+
+  BULK_TODOD_MAX_LENGTH: 50
 };
 
 export const HTTP_STATUS = {

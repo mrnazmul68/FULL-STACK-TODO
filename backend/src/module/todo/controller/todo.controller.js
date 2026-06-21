@@ -13,6 +13,12 @@ export const createTodo = asyncHandler(async (req, res) => {
 });
 
 //bulkCreateTodos
-export const bulkCreateTodos = asyncHandler(async (req, res) => {
+export const createBulkTodos = asyncHandler(async (req, res) => {
   const todos = req.body?.todos || [];
+  const allTodos = await todoService.bulkTodos(todos, req.user?._id);
+  new ApiResponse(
+    HTTP_STATUS.CREATED,
+    allTodos,
+    "Bulk todos created successfully",
+  ).send(res);
 });

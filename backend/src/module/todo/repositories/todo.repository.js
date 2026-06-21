@@ -1,6 +1,6 @@
 import { HTTP_STATUS } from "../../../shared/constant.js";
 import { ApiError } from "../../../utils/ApiError.js";
-import { Todo } from "../model/todo.model.js";
+import { title_collation, Todo } from "../model/todo.model.js";
 
 export class TodoRepository {
   constructor(model = Todo) {
@@ -19,10 +19,15 @@ export class TodoRepository {
   }
 
   //bulkCreateTodos
-  async bulkCreateTodos(todosData) {
-    return await this.model.create(todosData);
+  async createBulkTodos(todosData) {
+    return await this.model.insertMany(todosData, {
+      ordered: false,
+      collation: title_collation,
+    });
   }
 }
+
+
 
 // import { Todo } from "../model/todo.model.js";
 

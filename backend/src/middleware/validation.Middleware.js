@@ -2,7 +2,7 @@ import { HTTP_STATUS } from "../shared/constant.js";
 import { ApiResponse } from "./../utils/ApiResponse.js";
 import { ZodError } from "zod";
 
-const validate = (schema) => (req, res, next) => {
+export const validate = (schema) => (req, res, next) => {
   try {
     const parsed = schema.parse({
       body: req.body,

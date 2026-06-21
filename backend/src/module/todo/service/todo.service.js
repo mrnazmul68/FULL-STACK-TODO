@@ -14,10 +14,28 @@ export class TodoService {
       });
       return todo;
     } catch (error) {
-      throw new ApiError(
-        HTTP_STATUS.INTERNAL_SERVER_ERROR,
-        error.message || "Service error for todo",
-      );
+      if (error.message === "Duplicate title") {
+        throw new ApiError(
+          HTTP_STATUS.CONFLICT,
+          "Todo with this title already exists",
+        );
+      }
+      throw error;
+    }
+  }
+  async bulkTodos(todosData, userId) {
+    const todosWithUser = (todosData || []).map((todo) => ({
+      ...todo,
+      user: userId,
+    }));
+    try {
+      const created = await this.todoRepository.createBulkTodos(todosWithUser);
+      return {
+        count: created.length,
+        todos: created,
+      };
+    } catch (error) {
+      console.error(error);
     }
   }
 }
