@@ -40,29 +40,26 @@ export class TodoService {
         successCount: created.length,
         failedCount: 0,
         inserted: created,
-        errors: [],
       };
     } catch (error) {
-      // যদি এটি MongoBulkWriteError বা writeErrors যুক্ত কোনো এরর হয়
-      if (
-        error.name === "BulkWriteError" ||
-        error.name === "MongoBulkWriteError" ||
-        error.writeErrors
-      ) {
+      if (error.name === "MongoBulkWriteError" || error.writeErrors) {
         const inserted = error.insertedDocs || [];
         const errors = (error.writeErrors || []).map((err) => {
+          const code = err.err?.code;
+          const op = err.err?.op;
+          const errmsg = err.err?.errmsg;
+
           let reason = "Creation failed";
 
-          // duplicate key error code is 11000
-          if (err.code === 11000) {
-            reason = `Todo with title '${err.op?.title}' already exists`;
-          } else if (err.errmsg) {
-            reason = err.errmsg;
+          if (code === 11000) {
+            reason = `Todo with title '${op?.title}' already exists`;
+          } else if (errmsg) {
+            reason = errmsg;
           }
 
           return {
             index: err.index,
-            todo: err.op,
+            todo: op,
             reason: reason,
           };
         });
@@ -83,28 +80,3 @@ export class TodoService {
     }
   }
 }
-
-//bulktodos Service
-// async bulkTodos(todosData, userId) {
-//   if (!userId) {
-//     throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "User not authenticated");
-//   }
-//   const todosWithUser = todosData.map((todo) => ({
-//     ...todo,
-//     user: userId,
-//   }));
-
-//   try {
-//     const created = await this.todoRepository.createBulkTodos(todosWithUser);
-//     return {
-//       count: created.length,
-//       todos: created,
-//     };
-//   } catch (error) {
-//            throw new ApiError(
-//       HTTP_STATUS.INTERNAL_SERVER_ERROR,
-//       "Bulk todo creation failed",
-//     );
-//   }
-// }
-// }
