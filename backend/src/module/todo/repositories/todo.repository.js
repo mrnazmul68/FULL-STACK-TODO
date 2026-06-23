@@ -18,28 +18,11 @@ export class TodoRepository {
     }
   }
 
-  //bulkCreateTodos
+  // bulk todos Repository
+  bulkCreateTodos;
   async createBulkTodos(todosData) {
     return await this.model.insertMany(todosData, {
       ordered: false,
-      collation: title_collation,
     });
   }
 }
-
-
-
-// import { Todo } from "../model/todo.model.js";
-
-// export const createTodoRepository = () => {
-//   return {
-//     create: async (todoData) => {
-//       try {
-//         const todo = await Todo.create(todoData);
-//         return todo;
-//       } catch (err) {
-//         console.error(err);
-//       }
-//     },
-//   };
-// };

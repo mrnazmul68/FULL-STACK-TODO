@@ -8,7 +8,7 @@ const userRepository = new UserRepository();
 
 export const protect = asyncHandler(async (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer")) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new ApiError(
       HTTP_STATUS.UNAUTHORIZED,
       "Unauthorized request and token not found",
@@ -16,6 +16,9 @@ export const protect = asyncHandler(async (req, res, next) => {
   }
 
   const token = authHeader.split(" ").at(1);
+  if (!token) {
+    throw new ApiError(HTTP_STATUS.UNAUTHORIZED, "Token not found");
+  }
   const decoded = verifyAccessToken(token);
   const user = await userRepository.findById(decoded.id, "-password -__v");
   if (!user) {
