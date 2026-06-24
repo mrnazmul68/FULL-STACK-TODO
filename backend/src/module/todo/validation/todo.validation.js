@@ -1,6 +1,9 @@
 import z from "zod";
-import { VALIDATION } from "../../../shared/constant.js";
-import { TODO_STATUS, VALID_TODO_STATUS } from "../../../shared/enums.js";
+import { PAGINATION, VALIDATION } from "../../../shared/constant.js";
+import {
+  VALID_PRIORITY_STATUS,
+  VALID_TODO_STATUS,
+} from "../../../shared/enums.js";
 
 const bodyField = z.object({
   title: z
@@ -24,13 +27,22 @@ const bodyField = z.object({
       message: `Status must be one of ${VALID_TODO_STATUS.join(", ")}`,
     })
     .optional(),
+  priority: z
+    .enum(VALID_PRIORITY_STATUS, {
+      message: `Priority must be one of ${VALID_PRIORITY_STATUS.join(", ")}`,
+    })
+    .optional(),
+
+  dueDate: z.coerce.date().nullable().optional(),
 });
 
+// single todoValidationSchema
 export const todoValidationSchema = z.object({
   body: bodyField,
 });
 
-export const bulkTodosValidationSchema  = z.object({
+//bulkTodosValidationSchema
+export const bulkTodosValidationSchema = z.object({
   body: z.object({
     todos: z
       .array(bodyField)
@@ -39,5 +51,41 @@ export const bulkTodosValidationSchema  = z.object({
         VALIDATION.BULK_TODOD_MAX_LENGTH,
         `You can't create more than ${VALIDATION.BULK_TODOD_MAX_LENGTH} todos together`,
       ),
+  }),
+});
+
+//getTodosQuerySchema
+export const getTodosQuerySchema = z.object({
+  query: z.object({
+    page: z
+      .string()
+      .optional()
+      .transform((val) => (val !== undefined ? parseInt(val, 10) : 1))
+      .pipe(z.number().int().min(1, "Page must be at least 1")),
+    limit: z
+      .string()
+      .optional()
+      .transform((val) => (val !== undefined ? parseInt(val, 10) : 1))
+      .pipe(
+        z
+          .number()
+          .int()
+          .min(PAGINATION.DEFAULT_PAGE)
+          .max(
+            PAGINATION.MAX_LIMIT,
+            `limit cannot exceed ${PAGINATION.MAX_LIMIT}`,
+          ),
+      ),
+    status: z.enum(VALID_TODO_STATUS).optional(),
+    priority: z.enum(VALID_PRIORITY_STATUS).optional(),
+    search: z
+      .string()
+      .trim()
+      .max(100, "search query cannot exceed 100 characters")
+      .optional(),
+    overdue: z
+      .enum(["true", "false"])
+      .optional()
+      .transform((val) => val === "true"),
   }),
 });

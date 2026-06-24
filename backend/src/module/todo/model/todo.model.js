@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 import { VALIDATION } from "../../../shared/constant.js";
-import { TODO_STATUS, VALID_TODO_STATUS } from "../../../shared/enums.js";
+import {
+  PRIORITY_STATUS,
+  TODO_STATUS,
+  VALID_PRIORITY_STATUS,
+  VALID_TODO_STATUS,
+} from "../../../shared/enums.js";
 
 const todoSchema = new mongoose.Schema(
   {
@@ -27,6 +32,7 @@ const todoSchema = new mongoose.Schema(
     description: {
       type: String,
       trim: true,
+      required: true,
       maxlength: [
         VALIDATION.DESCRIPTION_MAX_LENGTH,
         `Description cannot exceed ${VALIDATION.DESCRIPTION_MAX_LENGTH} characters`,
@@ -39,6 +45,18 @@ const todoSchema = new mongoose.Schema(
         message: `Status must be one of: ${VALID_TODO_STATUS.join(", ")}`,
       },
       default: TODO_STATUS.ACTIVE,
+    },
+    priority: {
+      type: String,
+      enum: {
+        values: VALID_PRIORITY_STATUS,
+        message: `Priority must be one of: ${VALID_PRIORITY_STATUS.join(", ")}`,
+      },
+      default: PRIORITY_STATUS.LOW,
+    },
+    dueDate: {
+      type: Date,
+      default: null,
     },
   },
   {
@@ -54,6 +72,8 @@ const todoSchema = new mongoose.Schema(
 );
 export const title_collation = { locale: "en", strength: 2 };
 
+todoSchema.index({ user: 1, priority: 1 });
+todoSchema.index({ user: 1, dueDate: 1 });
 todoSchema.index(
   { user: 1, title: 1 },
   { unique: true, collation: title_collation },

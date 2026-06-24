@@ -15,7 +15,7 @@ export const VALIDATION = {
 
   DESCRIPTION_MAX_LENGTH: 500,
 
-  BULK_TODOD_MAX_LENGTH: 50
+  BULK_TODOD_MAX_LENGTH: 50,
 };
 
 export const HTTP_STATUS = {
@@ -31,4 +31,7 @@ export const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
 };
 
-
+export const PAGINATION = Object.freeze({
+  DEFAULT_PAGE: 1,
+  MAX_LIMIT: 999,
+});
