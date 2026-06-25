@@ -4,6 +4,7 @@ export class UserRepository {
   constructor(model = User) {
     this.model = model;
   }
+
   async createUser(userData) {
     return await this.model.create(userData);
   }

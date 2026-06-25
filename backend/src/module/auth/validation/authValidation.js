@@ -5,6 +5,7 @@ const emailField = z
   .string()
   .trim()
   .min(1, "Email is required")
+  .toLowerCase()
   .max(
     VALIDATION.EMAIL_MAX_LENGTH,
     `Email must be at most ${VALIDATION.EMAIL_MAX_LENGTH} characters long`,

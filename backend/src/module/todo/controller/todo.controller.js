@@ -27,15 +27,18 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
 
   // যদি কিছু সফল হয় এবং কিছু ফেইল করে
   if (result.failedCount > 0) {
-    const message =
-      result.successCount > 0
-        ? `Partially created: ${result.successCount} succeeded, ${result.failedCount} failed`
-        : "Failed to create all todos";
-
+    if (result.successCount === 0) {
+      return new ApiResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        result,
+        "No todos were created",
+      ).send(res);
+    }
+    // এখানে আসা মানেই successCount > 0, ternary দরকার নেই
     return new ApiResponse(
-      HTTP_STATUS.ACCEPTED, // বা 200/207 Multi-Status
+      HTTP_STATUS.ACCEPTED,
       result,
-      message,
+      `Partially created: ${result.successCount} succeeded, ${result.failedCount} failed`,
     ).send(res);
   }
 
@@ -46,22 +49,3 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
     "Bulk todos created successfully",
   ).send(res);
 });
-
-//bulk todos Controller
-// export const createBulkTodos = asyncHandler(async (req, res) => {
-//   const todos = req.body?.todos;
-
-//   if (!Array.isArray(todos) || todos.length === 0) {
-//     throw new ApiError(
-//       HTTP_STATUS.BAD_REQUEST,
-//       "Todos array is required and cannot be empty",
-//     );
-//   }
-
-//   const allTodos = await todoService.bulkTodos(todos, req.user?._id);
-//   new ApiResponse(
-//     HTTP_STATUS.CREATED,
-//     allTodos,
-//     "Bulk todos created successfully",
-//   ).send(res);
-// });

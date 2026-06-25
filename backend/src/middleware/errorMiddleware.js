@@ -25,7 +25,7 @@ export const errorMiddleware = (err, _req, res, _next) => {
   }
   if (err.name === "JsonWebTokenError") {
     statusCode = HTTP_STATUS.UNAUTHORIZED;
-    message = "invalid token";
+    message = "invalid token, haha";
   }
   if (err.name === "TokenExpiredError") {
     statusCode = HTTP_STATUS.UNAUTHORIZED;
@@ -34,6 +34,7 @@ export const errorMiddleware = (err, _req, res, _next) => {
   if (statusCode >= 500) {
     console.error({ err }, message);
   }
+
   if (
     env.NODE_ENV === "production" &&
     statusCode === 500 &&
