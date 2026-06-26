@@ -8,7 +8,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       required: [true, "Name is required"],
-      maxlength: VALIDATION.NAME_MAX_LENGTH,
+      maxlength: [
+        VALIDATION.NAME_MAX_LENGTH,
+        `Name must be at most ${VALIDATION.NAME_MAX_LENGTH} characters long`,
+      ],
     },
     email: {
       type: String,
@@ -17,6 +20,10 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+      maxlength: [
+        VALIDATION.EMAIL_MAX_LENGTH,
+        `Email must be at most ${VALIDATION.EMAIL_MAX_LENGTH} characters long`,
+      ],
     },
     password: {
       type: String,
