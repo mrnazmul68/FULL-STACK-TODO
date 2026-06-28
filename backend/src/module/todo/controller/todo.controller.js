@@ -25,7 +25,6 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
 
   const result = await todoService.bulkTodos(todos, req.user?._id);
 
-  // যদি কিছু সফল হয় এবং কিছু ফেইল করে
   if (result.failedCount > 0) {
     if (result.successCount === 0) {
       return new ApiResponse(
@@ -34,7 +33,6 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
         "No todos were created",
       ).send(res);
     }
-    // এখানে আসা মানেই successCount > 0, ternary দরকার নেই
     return new ApiResponse(
       HTTP_STATUS.ACCEPTED,
       result,
@@ -42,10 +40,14 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
     ).send(res);
   }
 
-  // সব সফল হলে
   new ApiResponse(
     HTTP_STATUS.CREATED,
     result,
     "Bulk todos created successfully",
   ).send(res);
+});
+
+// get todos Controller
+export const getAllTodos = asyncHandler(async (req, res) => {
+  const todo = await todoService.getAll();
 });
