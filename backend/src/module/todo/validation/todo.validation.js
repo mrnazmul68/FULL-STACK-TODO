@@ -22,18 +22,7 @@ const bodyField = z.object({
       VALIDATION.DESCRIPTION_MAX_LENGTH,
       `Description cannot be greater than ${VALIDATION.DESCRIPTION_MAX_LENGTH} characters`,
     ),
-  status: z
-    .enum(VALID_TODO_STATUS, {
-      message: `Status must be one of ${VALID_TODO_STATUS.join(", ")}`,
-    })
-    .optional(),
-  priority: z
-    .enum(VALID_PRIORITY_STATUS, {
-      message: `Priority must be one of ${VALID_PRIORITY_STATUS.join(", ")}`,
-    })
-    .optional(),
-
-  dueDate: z.coerce.date().nullable().optional(),
+ 
 });
 
 // single todoValidationSchema

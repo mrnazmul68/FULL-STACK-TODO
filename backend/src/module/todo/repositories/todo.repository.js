@@ -1,5 +1,6 @@
 import { HTTP_STATUS } from "../../../shared/constant.js";
 import { ApiError } from "../../../utils/ApiError.js";
+import { toPlainObjects } from "../../../utils/toPlainObjects.js";
 import { title_collation, Todo } from "../model/todo.model.js";
 
 const DEFALULT_SORT = { createdAt: -1 };
@@ -38,5 +39,10 @@ export class TodoRepository {
       );
     }
     const skip = (page - 1) * limit;
+    const [todos, total] = await Promise.all([
+      this.model.find(query).sort(sort).skip(skip).limit(limit).lean(),
+      this.model.countDocuments(query),
+    ]);
+    return { todos: todos.map(toPlainObjects), total };
   }
 }

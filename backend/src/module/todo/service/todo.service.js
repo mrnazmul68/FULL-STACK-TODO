@@ -8,19 +8,6 @@ export class TodoService {
     this.todoRepository = todoRepo;
   }
 
-  //filter system
-  static #buildFilterQuery({ status, priority, overdue }, userId) {
-    const query = { user: userId };
-    if (overdue) {
-      query.status = TODO_STATUS.ACTIVE;
-      query.dueDate = { $lt: new Date(new Date().setHours(0, 0, 0, 0)) };
-    } else {
-      if (status) query.status = status;
-    }
-    if (priority) query.priority = priority;
-    return query;
-  }
-
   // single todo create
   async todos(todoData, userId) {
     try {
@@ -95,6 +82,19 @@ export class TodoService {
     }
   }
 
+  //filter system
+  static #buildFilterQuery({ status, priority, overdue }, userId) {
+    const query = { user: userId };
+    if (overdue) {
+      query.status = TODO_STATUS.ACTIVE;
+      query.dueDate = { $lt: new Date(new Date().setHours(0, 0, 0, 0)) };
+    } else {
+      if (status) query.status = status;
+    }
+    if (priority) query.priority = priority;
+    return query;
+  }
+
   //get all todos
   async getAll(filters, userId) {
     const {
@@ -103,6 +103,17 @@ export class TodoService {
       search,
       ...filterQuery
     } = filters;
-    const filtersQuery = TodoService.#buildFilterQuery(filterQuery, userId)
+    const filtersQuery = TodoService.#buildFilterQuery(filterQuery, userId);
+    const { todos, total } = await this.todoRepository.findWithPagination(
+      filtersQuery,
+      { page, limit },
+    );
+    return {
+      todos,
+      pagination: {
+        total,
+        currentPage: page,
+      },
+    };
   }
 }

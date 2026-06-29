@@ -5,6 +5,7 @@ import { ApiResponse } from "./../../../utils/ApiResponse.js";
 
 const todoService = new TodoService();
 
+// single todo Controller
 export const createTodo = asyncHandler(async (req, res) => {
   const todo = await todoService.todos(req.body, req.user?._id);
   new ApiResponse(HTTP_STATUS.CREATED, todo, "Todo created successfully").send(
