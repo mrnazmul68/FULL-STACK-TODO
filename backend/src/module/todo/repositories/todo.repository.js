@@ -3,7 +3,7 @@ import { ApiError } from "../../../utils/ApiError.js";
 import { toPlainObjects } from "../../../utils/toPlainObjects.js";
 import { title_collation, Todo } from "../model/todo.model.js";
 
-const DEFALULT_SORT = { createdAt: -1 };
+const DEFAULT_SORT = { createdAt: -1 };
 
 export class TodoRepository {
   constructor(model = Todo) {
@@ -31,14 +31,17 @@ export class TodoRepository {
   }
 
   //find with pagination and filter
-  async findWithPagination(query, { page, limit, sort = DEFALULT_SORT }) {
+  async findWithPagination(query, { page, limit, sort = DEFAULT_SORT, search = null }) {
     if (page < 1 || limit < 1) {
       throw new ApiError(
         HTTP_STATUS.BAD_REQUEST,
-        "Invalid pagination parameters: page=${page}, limit=${limit}",
+        `Invalid pagination parameters: page=${page}, limit=${limit}`,
       );
     }
     const skip = (page - 1) * limit;
+    if(search){
+      const matchQuery = {...query}
+    }
     const [todos, total] = await Promise.all([
       this.model.find(query).sort(sort).skip(skip).limit(limit).lean(),
       this.model.countDocuments(query),

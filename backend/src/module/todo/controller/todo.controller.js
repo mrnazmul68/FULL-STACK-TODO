@@ -50,5 +50,13 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
 
 // get todos Controller
 export const getAllTodos = asyncHandler(async (req, res) => {
-  const todo = await todoService.getAll();
+  const userId = req.user.id; // from protect middleware
+
+  const result = await todoService.getAll(req.query, userId);
+
+  return new ApiResponse(
+    HTTP_STATUS.OK,
+    result,
+    "Todos fetched successfully",
+  ).send(res);
 });
