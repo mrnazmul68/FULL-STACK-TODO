@@ -1,4 +1,5 @@
 import { HTTP_STATUS } from "../../../shared/constant.js";
+import { ApiError } from "../../../utils/ApiError.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { TodoService } from "../service/todo.service.js";
 import { ApiResponse } from "./../../../utils/ApiResponse.js";
@@ -50,7 +51,7 @@ export const createBulkTodos = asyncHandler(async (req, res) => {
 
 // get todos Controller
 export const getAllTodos = asyncHandler(async (req, res) => {
-  const userId = req.user.id; // from protect middleware
+  const userId = req.user._id;
 
   const result = await todoService.getAll(req.query, userId);
 

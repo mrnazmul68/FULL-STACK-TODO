@@ -82,37 +82,59 @@ export class TodoService {
     }
   }
 
-  //filter system
+  // ── Build MongoDB filter query from validated query params ──────────────
   static #buildFilterQuery({ status, priority, overdue }, userId) {
     const query = { user: userId };
-    if (overdue) {
+
+    if (overdue === true) {
       query.status = TODO_STATUS.ACTIVE;
       query.dueDate = { $lt: new Date(new Date().setHours(0, 0, 0, 0)) };
     } else {
       if (status) query.status = status;
     }
+
     if (priority) query.priority = priority;
+
     return query;
   }
 
-  //get all todos
+  // ── Build sort object from validated sortBy / sortOrder params ──────────
+  static #buildSortOption(sortBy = "createdAt", sortOrder = "desc") {
+    const direction = sortOrder === "asc" ? 1 : -1;
+    return { [sortBy]: direction };
+  }
+
+  //get all todos with pagination, filters and search
   async getAll(filters, userId) {
     const {
       page = PAGINATION.DEFAULT_PAGE,
       limit = PAGINATION.DEFAULT_LIMIT,
       search,
-      ...filterQuery
+      sortBy,
+      sortOrder,
+      ...filterParams
     } = filters;
-    const filtersQuery = TodoService.#buildFilterQuery(filterQuery, userId);
+
+    const filterQuery = TodoService.#buildFilterQuery(filterParams, userId);
+    const sort = TodoService.#buildSortOption(sortBy, sortOrder);
+
     const { todos, total } = await this.todoRepository.findWithPagination(
-      filtersQuery,
-      { page, limit },
+      filterQuery,
+      { page, limit, sort, search },
     );
+
+    const totalPages = Math.ceil(total / limit);
+    const currentPage = Number(page);
+
     return {
       todos,
       pagination: {
         total,
-        currentPage: page,
+        totalPages,
+        currentPage,
+        pageSize: todos.length,
+        hasNextPage: currentPage < totalPages,
+        hasPrevPage: currentPage > 1,
       },
     };
   }

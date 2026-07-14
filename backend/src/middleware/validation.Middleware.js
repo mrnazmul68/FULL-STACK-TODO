@@ -4,25 +4,29 @@ import { ZodError } from "zod";
 
 export const validate = (schema) => (req, res, next) => {
   try {
-    const parsed = schema.parse({
-      body: req.body,
-      query: req.query,
-      params: req.params,
-    });
+    const input = {};
+
+    if ("body" in req) input.body = req.body;
+    if ("query" in req) input.query = req.query;
+    if ("params" in req) input.params = req.params;
+
+    const parsed = schema.parse(input);
+
     if ("body" in parsed) req.body = parsed.body;
-    if ("query" in parsed) req.query = parsed.query;
-    if ("params" in parsed) req.params = parsed.params;
+    if ("query" in parsed) Object.assign(req.query, parsed.query);
+    if ("params" in parsed) Object.assign(req.params, parsed.params);
+
     next();
   } catch (error) {
     if (error instanceof ZodError) {
       const errors = error.issues.map((err) => ({
-        field: err.path.length ? err.path.join(".") : "Unknown",
+        field: err.path.length ? err.path.join(".") : "unknown",
         message: err.message,
       }));
       return new ApiResponse(
         HTTP_STATUS.BAD_REQUEST,
-        errors,
-        "Validation error",
+        { errors },
+        "Validation failed",
       ).send(res);
     }
     return next(error);
