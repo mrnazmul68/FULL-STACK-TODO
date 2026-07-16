@@ -32,3 +32,13 @@ export const createTodo = async (todoData) => {
   return res.data.data;
 };
 
+// POST /todos/bulk to create bulk todos
+export const createBulkTodos = async (todosData) => {
+  const res = await axios.post(
+    `${API_BASE}/todos/bulk`,
+    { todos: todosData },
+    { headers: authHeaders() }
+  );
+  return res.data.data;
+};
+
